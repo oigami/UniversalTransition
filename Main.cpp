@@ -12,19 +12,23 @@ public:
 
   void Draw(double min_vague_alpha, double max_vague_alpha) {
 
-    /* 先頭2つはアルファ値のしきい値、後ろ2つはアルファ値を反転するための値 */
     ConstantBuffer<Float4> constant;
     constant->x = static_cast<float>(min_vague_alpha);
     constant->y = static_cast<float>(max_vague_alpha);
 
-    constant->z = 0.0f;
-    constant->w = 1.0f;
     draw(fore_tex_, constant, fore_func_);
 
-    constant->z = -1.0f;
-    constant->w = -1.0f;
     draw(back_tex_, constant, back_func_);
 
+    Graphics2D::SetBlendState(BlendState::Default);
+    Graphics2D::SetRenderTarget(Graphics::GetSwapChainTexture());
+
+    Graphics2D::BeginPS(rule_shader);
+    Graphics2D::SetConstant(ShaderStage::Pixel, 1, constant);
+    Graphics2D::SetTexture(ShaderStage::Pixel, 1, fore_tex_);
+    Graphics2D::SetTexture(ShaderStage::Pixel, 2, back_tex_);
+    rule_.resize(Window::Size()).draw();
+    Graphics2D::EndPS();
   }
 
 private:
@@ -33,19 +37,14 @@ private:
     tex.clear(Color(0, 0, 0, 0));
     Graphics2D::SetRenderTarget(tex);
 
+    // 同一画像を別のレンダーターゲットに描画しようとすると出てこなくなる
+    Texture().draw();
+
     constexpr BlendState blend(true,
                                Blend::One, Blend::Zero, BlendOp::Add,
                                Blend::One, Blend::Zero, BlendOp::Add);
     Graphics2D::SetBlendState(blend);
     draw_func();
-
-    Graphics2D::SetRenderTarget(Graphics::GetSwapChainTexture());
-    Graphics2D::SetBlendState(BlendState::Default);
-    Graphics2D::BeginPS(rule_shader);
-    Graphics2D::SetConstant(ShaderStage::Pixel, 1, constant);
-    Graphics2D::SetTexture(ShaderStage::Pixel, 1, tex);
-    rule_.resize(Window::Size()).draw();
-    Graphics2D::EndPS();
 
   }
 
