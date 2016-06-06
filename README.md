@@ -1,0 +1,2 @@
+# UniversalTransition
+Siv3Dでルール画像を用いたトランジションをするサンプル
