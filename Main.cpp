@@ -16,9 +16,9 @@ public:
     constant->x = static_cast<float>(min_vague_alpha);
     constant->y = static_cast<float>(max_vague_alpha);
 
-    draw(fore_tex_, constant, fore_func_);
+    draw(fore_tex_, fore_func_);
 
-    draw(back_tex_, constant, back_func_);
+    draw(back_tex_, back_func_);
 
     Graphics2D::SetBlendState(BlendState::Default);
     Graphics2D::SetRenderTarget(Graphics::GetSwapChainTexture());
@@ -33,7 +33,7 @@ public:
 
 private:
 
-  void draw(RenderTexture& tex, const ConstantBuffer<Float4>& constant, std::function<void()> draw_func) {
+  void draw(RenderTexture& tex, std::function<void()> draw_func) {
     tex.clear(Color(0, 0, 0, 0));
     Graphics2D::SetRenderTarget(tex);
 
