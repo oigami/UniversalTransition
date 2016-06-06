@@ -72,7 +72,7 @@ void Main() {
   gui.add(L"alpha", GUISlider::Create(0, 1.0, 0, true));
   gui.add(L"vague", GUISlider::Create(0, 1.0, 0, true));
 
-  Image img(L"Data/rule.png");
+  Image img(L"rule.png");
   for (auto& i : img) {
     i.a = i.g;
   }
